@@ -1,0 +1,322 @@
+*{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0px;
+    margin: 0px;
+}
+body{
+    background-color: slategray;
+}
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: aliceblue;
+}
+.header__title{
+    display: flex;
+    color: var(--primaryColor);
+    align-items: center;
+}
+.header__nav{
+    padding: 10px;
+}
+.nav__list{
+    list-style: none;
+    display: flex;
+}
+.nav__listItem{
+    margin: 0px 10px 0px 10px;
+    display: flex;
+    justify-self: center;
+}
+.nav__link{
+    background-color: slategrey;
+    color: white;
+    border: 1px solid slategrey;
+    text-decoration: none;
+    padding: 10px 30px;
+    font-size: 18px;
+    border-radius: 50px;
+}
+.nav__link:active{
+    background-color: white;
+    color: slategray;
+    border: slategray 1px solid;
+}
+.nav__link:active svg{
+    fill: slategray;
+}
+.button{
+    background-color: slategray;
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: 1px solid slategray;
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    width: fit-content;
+    cursor: pointer;
+}
+.button:active{
+    background-color: white;
+    color: slategray;
+    border: 1px solid slategrey;
+}
+
+.button__alt{
+    background-color: white;
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: 1px solid white;
+    color: slategray;
+    font-size: 18px;
+    text-decoration: none;
+    width: fit-content;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+}
+.button__alt:active{
+    background-color: slategray;
+    color: white;
+    border: 1px solid white;
+}
+
+.content{
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+}
+.main{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+/* Repetir home__login etc etc para el contenido de otras paginas */
+.home__productos{
+    background-color: slategray;
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    color: white;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.card__title{
+    text-align: center;
+    font-size: 12px;
+    padding: 0px 10px;
+}
+.card__title p{
+    font-size: 12px;
+    text-align: center;
+    margin: 10px;
+}
+.card__producto{
+    background-color: white;
+    color: black;
+    width: 265px;
+    border-radius: 20px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin: 10px;
+}
+
+.seccion-tran{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.title{
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form{
+    width: 50%;
+}
+
+.form-center{
+    margin:  20px auto;
+}
+
+.seccion-prod2{
+    height: 225px;
+}
+
+.seccion-ropa{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    justify-content: space-around;
+}
+
+.card__button{
+    background-color: slategrey;
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    text-decoration: none;
+    width: fit-content;
+    margin: 10px auto;
+    display: flex;
+    align-self: center;
+    cursor: pointer;
+}
+.card__button:active{
+    background-color: white;
+    color: slategray;
+    border: 1px solid slategrey;
+}
+
+.main__carrito{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    margin: auto;
+    width: 75%;
+}
+
+.productos{
+    background-color: slategray;
+    display: flex;
+    width: 70%;
+    padding: 20px;
+    border-radius: 20px;
+    color: white;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+
+.producto{
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 100%;
+    height: max-content;
+    color: black;
+    border-radius: 5px;
+    padding: 10px;
+    justify-content: space-around;
+}
+.producto p{
+    margin: auto 10px;
+    width: max-content;
+}
+
+.form_carrito{
+    display: flex;
+}
+
+.control p{
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.opciones{
+    width: min-content;
+    background-color: whitesmoke;
+    border: slategray 2px solid;
+    border-radius: 20px;
+    padding: 20px;
+    row-gap: 20px;
+    display: flex;
+    flex-direction: column;
+    height: min-content;
+}
+
+.home__usuarios{
+    background-color: slategray;
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    color: white;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.form__column{
+    display: flex;
+    flex-direction: column;
+}
+.form__dato{
+    display: flex;
+    flex-direction: column;
+}
+
+.footer{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    background-color: slategrey;
+    display: flex;
+    padding: 20px;
+    color: white;
+    flex-direction: column;
+    height: 100%;
+}
+
+input{
+    padding: 10px 10px;
+    outline: none;
+    border-radius: 5px;
+}
+label{
+    padding: 5px;
+}
+
+.table__usuarios{
+    background-color: slategray;
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    color: white;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.home__procedimientos{
+    background-color: slategray;
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    color: white;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.error{
+    color: rgb(244, 75, 75);
+    margin-left: 5px;
+}
