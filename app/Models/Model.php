@@ -175,23 +175,81 @@ class Model
     }
 
     // Insertar, recibimos un $_GET o $_POST
-    public function create($data): self
+    // public function create($data): self
+    // {
+    //     try {
+    //         $columns = array_keys($data); // array de claves del array
+    //         $columns = implode(', ', $columns); // y creamos una cadena separada por ,
+
+    //         $values = array_values($data); // array de los valores
+
+
+    //         $sql = "INSERT INTO {$this->table} ({$columns}) VALUES (?" . str_repeat(', ? ', count($values) - 1) . ")";
+
+    //         $this->query($sql, $values, '?');
+    //     } catch (Exception $e) {
+    //         die('Error al crear el registro:' . $e->getMessage());
+    //     }
+
+    //     return $this;
+    // }
+
+    public function create($tabla, $data): self
     {
         try {
-            $columns = array_keys($data); // array de claves del array
-            $columns = implode(', ', $columns); // y creamos una cadena separada por ,
 
-            $values = array_values($data); // array de los valores
+            $this->createTable($data);
 
 
+            // Crear las columnas y valores para la inserción
+            $columns = array_keys($data);
+            $columns = implode(', ', $columns);  // Creamos una cadena separada por comas
+
+            $values = array_values($data);  // Los valores de las columnas
+
+            // Construir la sentencia SQL para insertar
             $sql = "INSERT INTO {$this->table} ({$columns}) VALUES (?" . str_repeat(', ? ', count($values) - 1) . ")";
 
+            // Ejecutar la consulta de inserción
             $this->query($sql, $values, '?');
         } catch (Exception $e) {
             die('Error al crear el registro:' . $e->getMessage());
         }
 
         return $this;
+    }
+
+    //Metodo para comprobar si una tabla existe
+    //Calcula el numero de columnas de la tabla si es 0 es que no existe y si devulve un numero si existe
+    public function checkTableExists($tabla)
+    {
+        $sql = "SHOW TABLES LIKE '{$tabla}'";  // Comprobamos si la tabla existe
+        $result = $this->query($sql);  // Ejecutamos la consulta
+
+        return $result > 0;  // Si devuelve filas, la tabla existe
+    }
+
+    private function createTable($columns)
+    {
+        // Comenzamos a construir la consulta CREATE TABLE
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} (";
+
+        // Iteramos sobre las columnas para añadirlas a la consulta
+        $columnDefinitions = [];
+        foreach ($columns as $column => $type) {
+            // Ajustamos el tipo de dato y la definición de la columna
+            // Aquí puedes agregar otras opciones como NOT NULL, DEFAULT, etc. si las necesitas
+            $columnDefinitions[] = "{$column} {$type}";
+        }
+
+        // Unimos las definiciones de columnas por coma
+        $sql .= implode(', ', $columnDefinitions);
+
+        // Agregamos una columna ID autoincremental al final, si es necesario
+        $sql .= ", id INT AUTO_INCREMENT PRIMARY KEY)";
+
+        // Ejecutamos la consulta para crear la tabla
+        $this->query($sql);
     }
 
     public function update($id, $data)

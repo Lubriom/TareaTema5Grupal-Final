@@ -5,7 +5,7 @@
     <nav class="header__nav">
         <ul class="nav__list">
                 <li class="nav__listItem">
-                    <a class="nav__link" href="/productos">Productos</a>
+                    <a class="nav__link" href="/crearBD">Crear Base de Datos</a>
                 </li>
                 <li class="nav__listItem">
                     <a class="nav__link" href="/usuarios">Usuarios</a>

@@ -9,8 +9,8 @@ use App\Controllers\UsuarioController;
 // ser recuperados por un mismo controlador. Por ejemplo, /curso/:variable y /curso/ruta1 usan el mismo controlador
 // y :variable se trata como un parámetro ajeno a la ruta
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/crearBD', [HomeController::class, 'crearBD']);
 Route::get('/usuario/nuevo', [UsuarioController::class, 'create']);
-Route::get('/usuario', [UsuarioController::class, 'index']);
 Route::get('/usuario/pruebas', [UsuarioController::class, 'pruebasSQLQueryBuilder']);
 Route::get('/usuario/:id', [UsuarioController::class, 'show']);
 Route::post('/usuario', [UsuarioController::class, 'store']);
