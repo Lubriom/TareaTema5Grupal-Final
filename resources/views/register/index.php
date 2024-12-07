@@ -47,7 +47,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <form class="formulario" action="/registro" method="post" enctype="multipart/form-data">
                     <div class="register__datos">
                         <div class="boton"> 
-                            <input class="boton__enviar boton__registro" type="submit" name="registro" value="Registrate">
+                            <input class="boton__enviar boton__registro" type="submit" name="registro" value="Registro">
                         </div>
                     </div>
                 </form>
