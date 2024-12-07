@@ -3,6 +3,7 @@
 use Lib\Route;
 use App\Controllers\HomeController;
 use App\Controllers\UsuarioController;
+use App\Controllers\LoginController;
 
 // Indicaremos la clase del controlador y el método a ejecutar. Solo algunas rutas están implementadas
 // Tendremos rutas para get y pst, así como parámetros opcionales indicados con : que podrán
@@ -10,6 +11,9 @@ use App\Controllers\UsuarioController;
 // y :variable se trata como un parámetro ajeno a la ruta
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/crearBD', [HomeController::class, 'crearBD']);
+Route::get('/login', [LoginController::class, 'index']);
+Route::post('/login/check', [LoginController::class, 'check']);
+Route::get('/login/register', [LoginController::class, 'register']);
 Route::get('/usuario/nuevo', [UsuarioController::class, 'create']);
 Route::get('/usuario/pruebas', [UsuarioController::class, 'pruebasSQLQueryBuilder']);
 Route::get('/usuario/:id', [UsuarioController::class, 'show']);

@@ -12,7 +12,7 @@ class UsuarioController extends Controller
         $usuarioModel = new UsuarioModel();
 
         // Se recogen los valores del modelo, ya se pueden usar en la vista
-        $usuarios = $usuarioModel->consultaPrueba();
+        $usuarios = $usuarioModel->all();
 
         return $this->view('usuarios.index', $usuarios); // compact crea un array de índice usuarios
     }
