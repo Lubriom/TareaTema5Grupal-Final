@@ -132,7 +132,8 @@ if (isset($_POST['transaccion'])) { // Comprobamos si se hizo click en 'Realizar
 } else if (!$hayErrores) { // Comprobamos si se hizo click en 'Realizar Descuento'
     if (isset($_POST['precio_desc']) && $_SERVER["REQUEST_METHOD"] == "POST") {
         if ($_POST['token'] == $_SESSION['token']) {
-            $precio = $conexion->select("precio")->where("id", $_POST["id"])->get();
+
+            $precio = $conexion->select("precio")->where("id", $datosUsuario['id'])->get();
             echo "Descuento final es: " . $conexion->calcular_precio_con_descuento($precio[0]["precio"], $_POST["descuento"]);
         } else {
             echo 'Token Invalido';

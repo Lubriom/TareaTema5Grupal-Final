@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Models;
-use app\Models\Model;
 
 class UsuarioModel extends Model
 {
     // Nombre de la tabla que se realizarán las consultas
-    protected $table = 'usuario';
+    protected $table = 'usuarios';
 
     // Aquí también se podría definir las consultas que son específicas
     // para los usuarios. Para las demás llamaremos a los métodos de la

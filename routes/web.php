@@ -1,17 +1,19 @@
 <?php
 
-$request = $_SERVER['REQUEST_URI'];
+use Lib\Route;
+use App\Controllers\HomeController;
+use App\Controllers\UsuarioController;
 
-$allowed_routes = [
-    '/' => 'productos.php',
-    '/productos' => 'productos.php',
-    '/usuarios' => 'usuarios.php',
-    '/carrito' => 'carrito.php'
-];
+// Indicaremos la clase del controlador y el método a ejecutar. Solo algunas rutas están implementadas
+// Tendremos rutas para get y pst, así como parámetros opcionales indicados con : que podrán
+// ser recuperados por un mismo controlador. Por ejemplo, /curso/:variable y /curso/ruta1 usan el mismo controlador
+// y :variable se trata como un parámetro ajeno a la ruta
+Route::get('/', [HomeController::class, 'index']);
+Route::get('/usuario/nuevo', [UsuarioController::class, 'create']);
+Route::get('/usuario', [UsuarioController::class, 'index']);
+Route::get('/usuario/pruebas', [UsuarioController::class, 'pruebasSQLQueryBuilder']);
+Route::get('/usuario/:id', [UsuarioController::class, 'show']);
+Route::post('/usuario', [UsuarioController::class, 'store']);
 
-if (array_key_exists($request, $allowed_routes)) {
-    require $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . '../resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $allowed_routes[$request];
-} else {
-    http_response_code(404);
-    require $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . '../resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . '404.php';
-}
+ 
+Route::dispatch();
