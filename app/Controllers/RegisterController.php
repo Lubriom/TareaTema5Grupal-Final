@@ -7,7 +7,7 @@ use DateTime;
 use Exception;
 
 // use App\Models\UsuarioModel;
-class LoginController extends Controller
+class RegisterController extends Controller
 {
     public function index()
     {
@@ -16,7 +16,7 @@ class LoginController extends Controller
 
         // // Se recogen los valores del modelo, ya se pueden usar en la vista
         // $usuarios = $usuarioModel->all();
-        return $this->view('login.index'); // compact crea un array de índice usuarios
+        return $this->view('register.index'); // compact crea un array de índice usuarios
     }
     public function check()
     {
@@ -131,29 +131,4 @@ class LoginController extends Controller
         //return $this->redirect('/contacts');
     }
 
-    public function logout()
-    {
-        session_destroy();
-        return $this->redirect("home");
-    }
-
-    public function show($id)
-    {
-        echo "Mostrar usuario con id: {$id}";
-    }
-
-    public function edit($id)
-    {
-        echo "Editar usuario";
-    }
-
-    public function update($id)
-    {
-        echo "Actualizar usuario";
-    }
-
-    public function destroy($id)
-    {
-        echo "Borrar usuario";
-    }
 }

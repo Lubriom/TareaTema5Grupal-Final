@@ -133,6 +133,12 @@ class Model
         return $this->getAll();
     }
 
+    public function clear()
+    {
+        $this->query = null;
+        return $this;
+    }
+
     public function find($id): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = ?";
@@ -218,12 +224,11 @@ class Model
 
     //Metodo para comprobar si una tabla existe
     //Devuelve true si existe y false si no existe
-    public function checkTableExists($tabla)
+    public function checkTableExists()
     {
-        $sql = "SHOW TABLES LIKE '{$tabla}'";  // Comprobamos si la tabla existe
-        $result = $this->query($sql);  // Ejecutamos la consulta
-
-        return $result;  
+        $sql = "SHOW TABLES LIKE '{$this->table}'";
+        $resultado = $this->query($sql)->get();
+        return count($resultado);  // Si el resultado tiene filas, la tabla existe
     }
 
     public function createTable($columns)
@@ -244,7 +249,7 @@ class Model
 
         // Unimos las definiciones de columnas por coma
         $sql .= implode(', ', $columnDefinitions);
-        
+
         $sql .= ")";
         // Ejecutamos la consulta para crear la tabla
         $this->query($sql);
