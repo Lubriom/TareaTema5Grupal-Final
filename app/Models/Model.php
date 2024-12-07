@@ -194,18 +194,15 @@ class Model
     //     return $this;
     // }
 
-    public function create($tabla, $data): self
+    public function insertar($data): self
     {
         try {
 
-            $this->createTable($data);
-
-
             // Crear las columnas y valores para la inserción
             $columns = array_keys($data);
-            $columns = implode(', ', $columns);  // Creamos una cadena separada por comas
+            $columns = implode(', ', $columns);
 
-            $values = array_values($data);  // Los valores de las columnas
+            $values = array_values($data);
 
             // Construir la sentencia SQL para insertar
             $sql = "INSERT INTO {$this->table} ({$columns}) VALUES (?" . str_repeat(', ? ', count($values) - 1) . ")";
@@ -220,16 +217,16 @@ class Model
     }
 
     //Metodo para comprobar si una tabla existe
-    //Calcula el numero de columnas de la tabla si es 0 es que no existe y si devulve un numero si existe
+    //Devuelve true si existe y false si no existe
     public function checkTableExists($tabla)
     {
         $sql = "SHOW TABLES LIKE '{$tabla}'";  // Comprobamos si la tabla existe
         $result = $this->query($sql);  // Ejecutamos la consulta
 
-        return $result > 0;  // Si devuelve filas, la tabla existe
+        return $result;  
     }
 
-    private function createTable($columns)
+    public function createTable($columns)
     {
         // Comenzamos a construir la consulta CREATE TABLE
         $sql = "CREATE TABLE IF NOT EXISTS {$this->table} (";
@@ -242,12 +239,13 @@ class Model
             $columnDefinitions[] = "{$column} {$type}";
         }
 
+        // Agregamos una columna ID autoincremental al final, si es necesario
+        $sql .= " id INT AUTO_INCREMENT PRIMARY KEY,";
+
         // Unimos las definiciones de columnas por coma
         $sql .= implode(', ', $columnDefinitions);
-
-        // Agregamos una columna ID autoincremental al final, si es necesario
-        $sql .= ", id INT AUTO_INCREMENT PRIMARY KEY)";
-
+        
+        $sql .= ")";
         // Ejecutamos la consulta para crear la tabla
         $this->query($sql);
     }

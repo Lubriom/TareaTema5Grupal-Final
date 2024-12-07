@@ -15,7 +15,11 @@
             </li>
             <?php if (!isset($_SESSION['nombre'])) : ?>
                 <li class="nav__listItem">
+<<<<<<< HEAD
                     <a class="nav__link" href="/login">Iniciar Sesion</a>
+=======
+                    <a class="nav__link" href="/crearTablas">Crear Base de Datos</a>
+>>>>>>> 36abffe7dbd75c88386f0a3c399570cfd520ffcb
                 </li>
             <?php endif; ?>
             <?php if (isset($_SESSION['nombre'])): ?>
