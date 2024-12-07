@@ -154,7 +154,9 @@ class RegisterController extends Controller
                 if (empty($cadena)) {
                     $resultado[$input] = "Debe de rellenar el campo saldo";
                 } else if (!preg_match('/^\d+(\.\d+)?$/', $cadena)) {
-                    $resultado[$input] = "Saldo no valida.";
+                    $resultado[$input] = "Saldo no valido.";
+                }else if((float)$cadena<0){
+                    $resultado[$input] = "El saldo no puede ser negativo";
                 }
                 break;
         }

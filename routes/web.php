@@ -25,6 +25,7 @@ Route::get('/logout', [LoginController::class, 'logout']);
 //Gestion de usuarios
 Route::get('/usuario/:id', [UsuarioController::class, 'show']);
 Route::post('/usuario/panel/:id', [UsuarioController::class, 'update']);
+Route::post('/usuario/transaccion/:id', [UsuarioController::class, 'transaccion']);//Transaccion de Saldo
 
 //Comprobar usuarios datos método post
 Route::post('/login/check', [LoginController::class, 'check']);
