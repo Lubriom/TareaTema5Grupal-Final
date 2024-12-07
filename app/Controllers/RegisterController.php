@@ -29,10 +29,10 @@ class RegisterController extends Controller
         if ($csrf_token !== $_SESSION['csrf_token']) {
             // die('Token CSRF inválido');
             $errores['csrf'] = "Error: Token CSRF inválido.";
-            return $this->view('login.index', $errores);
+            return $this->view('register.index', $errores);
         }
 
-        $campos = ["user", "password"];
+        $campos = ["nombre", "apellidos", "user", "correo", "fech_Nac", "password", "saldo"];
         $errores = [];
 
         // Recorremos cada campo esperado y aplicamos el filtrado y validación
@@ -50,40 +50,42 @@ class RegisterController extends Controller
             }
         }
         if ($bandera) {
-            return $this->view('login.index', $errores);
+            return $this->view('register.index', $errores);
         } else {
             $busquedaUser = new UsuarioModel();
 
-            if ($busquedaUser->clear()->checkTableExists()) {
+            if (!$busquedaUser->clear()->checkTableExists()) {
+                $datos = ["nombre" => "VARCHAR(100)", "apellidos" => "VARCHAR(100)", "usuario" => "VARCHAR(100)", "correo" => "VARCHAR(100)", "fecha_Nac" => "DATETIME", "contraseña" => "VARCHAR(100)", "saldo" => "DECIMAL(20)"];
 
-                $contrasena = $busquedaUser->clear()->select('contraseña')->WHERE("usuario", $user)->get();
+                $busquedaUser->clear()->createTable($datos);
+            }
 
-                if (!empty($contrasena) ) {
-                    if (password_verify($password, $contrasena[0]["contraseña"])) {
-                        $_SESSION["nombre"]=$user;
-                        return $this->redirect('../home');
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("usuario", $user)->get();
 
-                    }else{
-                        $errores["password"] = "Contraseña Incorrecta";
+            if (empty($usuario)) {
 
-                        return $this->view('login.index', $errores); 
-                    }
-                }else{
-                    $errores["user"] = "Usuario Incorrecto";
+                $register["nombre"] = $nombre;
+                $register["apellidos"] = $apellidos;
+                $register["usuario"] = $user;
+                $register["correo"] = $correo;
+                $register["fecha_Nac"] = $fech_Nac;
+                $register["contraseña"] = password_hash($password,PASSWORD_DEFAULT);
+                $register["saldo"] = $saldo;
 
-                    return $this->view('login.index', $errores); 
-                }
+                $busquedaUser->clear()->insertar($register);
+
+                $datos = $busquedaUser->clear()->select('id')->WHERE("usuario", $user)->get();
+
+                $_SESSION["nombre"] = $user;
+                $_SESSION["id"] = $datos[0]["id"];
+
+                return $this->redirect("../home");
             } else {
-                $errores["csrf"] = "No hay ningun usuario registrado";
+                $errores["user"] = "Ese usuario ya existe";
 
-                return $this->view('login.index', $errores);
+                return $this->view('register.index', $errores);
             }
         }
-    }
-
-    public function register()
-    {
-        return $this->view('login.register');
     }
 
     function filtrado($datos): string
@@ -99,11 +101,47 @@ class RegisterController extends Controller
         $resultado = [];
 
         switch ($input) {
-
+            case 'nombre':
+                if (empty($cadena)) {
+                    $resultado[$input] = "Debe de rellenar el campo nombre.";
+                } else if (preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                    $resultado[$input] = "El nombre no puede ser de tipo numerico.";
+                } else if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚ]{1,20}$/', $cadena)) {
+                    $resultado[$input] = "La longitud del nombre no puede ser superior a 20 caracteres.";
+                }
+                break;
+            case 'apellidos':
+                if (empty($cadena)) {
+                    $resultado[$input] = "Debe de rellenar el campo apellidos.";
+                } else if (preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                    $resultado[$input] = "El apellido no puede ser de tipo numerico.";
+                }
+                break;
             case 'user':
                 if (empty($cadena)) {
                     $resultado[$input] = "Debe de rellenar el campo nombre.";
-                } 
+                }
+                break;
+            case 'correo':
+                if (preg_match('/^\w+\@\w+\.php$/i', $cadena) || !filter_var($cadena, FILTER_VALIDATE_EMAIL)) {
+                    $resultado[$input] = "Formato del email incorrecto.";
+                }
+                break;
+            case 'fech_Nac':
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $cadena)) {
+
+                    list($anio, $mes, $dia) = explode('-', $cadena);
+
+                    $resultado[$input] = (checkdate((int)$mes, (int)$dia, (int)$anio)) ? "" : "Error al introducir la fecha";
+                } else {
+                    $resultado[$input] = "Error al introducir la fecha.";
+                }
+                $hoy = date("Y-m-d");
+
+                if ($cadena > $hoy) {
+                    $resultado[$input] = "Error al introducir la fecha";
+                }
+
                 break;
             case 'password':
                 if (empty($cadena)) {
@@ -112,23 +150,15 @@ class RegisterController extends Controller
                     $resultado[$input] = "Contraseña no valida.";
                 }
                 break;
+            case 'saldo':
+                if (empty($cadena)) {
+                    $resultado[$input] = "Debe de rellenar el campo saldo";
+                } else if (!preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                    $resultado[$input] = "Saldo no valida.";
+                }
+                break;
         }
 
         return $resultado;
     }
-
-    public function store()
-    {
-        // Volvemos a tener acceso al modelo
-        // $usuarioModel = new UsuarioModel();
-
-        // Se llama a la función correpondiente, pasando como parámetro
-        // $_POST
-        // var_dump($_POST);
-        // echo "Se ha enviado desde POST";
-
-        // Podríamos redirigir a donde se desee después de insertar
-        //return $this->redirect('/contacts');
-    }
-
 }
