@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use Exception;
 use DateTime;
 
 class UsuarioController extends Controller
@@ -50,7 +51,104 @@ class UsuarioController extends Controller
         return $this->redirect('home');
     }
 
-    public function show()
+    public function show($id)
+    {
+        if ($id != $_SESSION["id"]) {
+            return $this->view('panelControl.noAcceso');
+        } else {
+            $usuarioModel = new UsuarioModel();
+
+            $usuario = $usuarioModel->clear()->select('*')->where("id", $id)->get();
+            return $this->view('panelControl.index', $usuario);
+        }
+    }
+
+    public function transaccion($id)
+    {
+        $bandera = false;
+        $busquedaUser = new UsuarioModel();
+
+        $csrf_token = isset($_POST['csrf_token']) ? $this->filtrado($_POST['csrf_token']) : '';
+
+        // Validación del token CSRF
+        if ($csrf_token !== $_SESSION['csrf_token']) {
+            // die('Token CSRF inválido');
+            $errores['csrf'] = "Error: Token CSRF inválido.";
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('panelControl.index', $datos);
+        }
+
+        $campos = ["idDestino", "saldoEnvio"];
+        $errores = [];
+
+        // Recorremos cada campo esperado y aplicamos el filtrado y validación
+        foreach ($campos as $campo) {
+            // Si el campo está definido en $_POST, lo filtramos, si no, se le asigna una cadena vacía
+            $$campo = isset($_POST[$campo]) ? $this->filtrado($_POST[$campo]) : '';
+            // Validamos el campo y almacenamos el resultado en el array de errores
+            $erroresCampo = $this->validarCampos($campo, $$campo);
+            $errores = array_merge($errores, $erroresCampo);
+        }
+
+        foreach ($errores as $error) {
+            if ($error != "") {
+                $bandera = true;
+            }
+        }
+        if ($bandera) {
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('panelControl.index', $datos);
+        } else {
+
+            $usuarioDestino = $busquedaUser->clear()->select('*')->WHERE("id", $idDestino)->get();
+            $usuarioOrigen = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+
+            if (!empty($usuarioDestino)) {
+                if ($saldoEnvio > $usuarioOrigen[0]["saldo"]) {
+                    $errores["saldoEnvio"] = "Intentas enviar mas saldo del que dispones";
+                    $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+                    $datos[] = $usuario[0];
+                    $datos[] = $errores;
+                    return $this->view('panelControl.index', $datos);
+                } else {
+                    $cantidadOrigen["saldo"] = $usuarioOrigen[0]["saldo"] - $saldoEnvio;
+                    $cantidadDestino["saldo"] = $usuarioDestino[0]["saldo"] + $saldoEnvio;
+
+                    try {
+                        $usuarioModel = new UsuarioModel();
+                        $conex = $usuarioModel->getConnection();
+
+                        $conex->beginTransaction();
+
+                        $usuarioModel->clear()->update($id, $cantidadOrigen);
+                        $usuarioModel->clear()->update($idDestino, $cantidadDestino);
+
+                        $conex->commit();
+                    } catch (Exception $e) {
+                        $conex->rollBack();
+                        echo "Ha habido algún error!!: " . $e->getMessage();
+                    }
+                    $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+                    $datos[] = $usuario[0];
+                    return $this->view("panelControl.index", $datos);
+                }
+            } else {
+                $errores["idDestino"] = "No existe ese usuario";
+                $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+                $datos[] = $usuario[0];
+                $datos[] = $errores;
+                return $this->view('panelControl.index', $datos);
+            }
+        }
+    }
+
+    public function listar()
     {
         $usuarioModel = new UsuarioModel();
         $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
@@ -58,11 +156,11 @@ class UsuarioController extends Controller
         $usuarios = [];
         $cada = 5;
 
-        $paginacion = $this->filtrado($_GET['page']);
+        $paginacion = $this->filtrado($_GET['p']);
         $paginacion = (is_numeric($paginacion)) ? $paginacion : 1;
 
         if ($paginacion <= 0 || ($paginacion * $cada) > $cantidadUsuarios) {
-            header("Location: /usuarios?page=1");
+            header("Location: /usuarios?p=1");
         }
         $desde = ($paginacion - 1) * $cada;
         $usuarios = $usuarioModel->rows($cada, $desde);
@@ -77,16 +175,89 @@ class UsuarioController extends Controller
 
     public function update($id)
     {
-        echo "Actualizar usuario";
+        $bandera = false;
+        $busquedaUser = new UsuarioModel();
+
+        $csrf_token = isset($_POST['csrf_token']) ? $this->filtrado($_POST['csrf_token']) : '';
+
+        // Validación del token CSRF
+        if ($csrf_token !== $_SESSION['csrf_token']) {
+            // die('Token CSRF inválido');
+            $errores['csrf'] = "Error: Token CSRF inválido.";
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('panelControl.index', $datos);
+        }
+
+        $campos = ["nombre", "apellidos", "user", "correo", "fech_Nac", "password", "saldo"];
+        $errores = [];
+
+        // Recorremos cada campo esperado y aplicamos el filtrado y validación
+        foreach ($campos as $campo) {
+            // Si el campo está definido en $_POST, lo filtramos, si no, se le asigna una cadena vacía
+            $$campo = isset($_POST[$campo]) ? $this->filtrado($_POST[$campo]) : '';
+            // Validamos el campo y almacenamos el resultado en el array de errores
+            $erroresCampo = $this->validarCampos($campo, $$campo);
+            $errores = array_merge($errores, $erroresCampo);
+        }
+
+        foreach ($errores as $error) {
+            if ($error != "") {
+                $bandera = true;
+            }
+        }
+        if ($bandera) {
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('panelControl.index', $datos);
+        } else {
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+
+            if (!empty($usuario)) {
+
+                if (!empty($nombre)) {
+                    $update["nombre"] = $nombre;
+                }
+                if (!empty($apellidos)) {
+                    $update["apellidos"] = $apellidos;
+                }
+                if (!empty($user)) {
+                    $update["usuario"] = $user;
+                }
+                if (!empty($correo)) {
+                    $update["correo"] = $correo;
+                }
+                if (!empty($fech_Nac)) {
+                    $update["fecha_Nac"] = $fech_Nac;
+                }
+                if (!empty($saldo)) {
+                    $update["saldo"] = $saldo;
+                }
+                if (!empty($update)) {
+                    $busquedaUser->clear()->update($id, $update);
+
+                    $datos = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+
+                    $_SESSION["nombre"] = $datos[0]["usuario"];
+                }
+
+                return $this->view("panelControl.index", $datos);
+            } else {
+                $errores["user"] = "Error al intentar actualizar los datos";
+                $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+                $datos[] = $usuario[0];
+                $datos[] = $errores;
+                return $this->view('panelControl.index', $datos);
+            }
+        }
     }
 
-    public function destroy($id)
-    {
-        echo "Borrar usuario";
-    }
-
-    // Función para mostrar como fuciona con ejemplos
-    private function filtrado($datos): string
+     private function filtrado($datos): string
     {
         $datos = trim($datos);
         $datos = stripslashes($datos);
@@ -94,14 +265,86 @@ class UsuarioController extends Controller
         return $datos;
     }
 
-    private function validarCampos(String $campo): string
+    private function validarCampos(String $input, String $cadena): array
     {
-        $resultado = "";
+        $resultado = [];
 
-        if (is_nan($campo)) {
-            $resultado = "Error: No se ha recibido un numero";
+        switch ($input) {
+            case 'nombre':
+
+                if (!empty($cadena)) {
+                    if (preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                        $resultado[$input] = "El nombre no puede ser de tipo numerico.";
+                    } else if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚ]{1,20}$/', $cadena)) {
+                        $resultado[$input] = "La longitud del nombre no puede ser superior a 20 caracteres.";
+                    }
+                }
+                break;
+            case 'apellidos':
+                if (!empty($cadena)) {
+                    if (preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                        $resultado[$input] = "El apellido no puede ser de tipo numerico.";
+                    }
+                }
+                break;
+            case 'correo':
+                if (!empty($cadena)) {
+                    if (preg_match('/^\w+\@\w+\.php$/i', $cadena) || !filter_var($cadena, FILTER_VALIDATE_EMAIL)) {
+                        $resultado[$input] = "Formato del email incorrecto.";
+                    }
+                }
+                break;
+            case 'fech_Nac':
+                if (!empty($cadena)) {
+                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $cadena)) {
+
+                        list($anio, $mes, $dia) = explode('-', $cadena);
+
+                        $resultado[$input] = (checkdate((int)$mes, (int)$dia, (int)$anio)) ? "" : "Error al introducir la fecha";
+                    } else {
+                        $resultado[$input] = "Error al introducir la fecha.";
+                    }
+                    $hoy = date("Y-m-d");
+
+                    if ($cadena > $hoy) {
+                        $resultado[$input] = "Error al introducir la fecha";
+                    }
+                }
+                break;
+            case 'saldo':
+                if (!empty($cadena)) {
+                    if (!preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                        $resultado[$input] = "Saldo no valida.";
+                    } else if ((float)$cadena < 0) {
+                        $resultado[$input] = "El saldo no puede ser negativo";
+                    }
+                }
+                break;
+            case 'idDestino':
+                if (empty($cadena)) {
+                    $resultado[$input] = "El id no puede estar vacio";
+                } else if (!preg_match('/^(\d)+$/', $cadena)) {
+                    $resultado[$input] = "El id debe ser de tipo entero";
+                }
+                break;
+            case 'saldoEnvio':
+                if (empty($cadena)) {
+                    $resultado[$input] = "Debe de rellenar el campo saldo";
+                } else if (!preg_match('/^\d+(\.\d+)?$/', $cadena)) {
+                    $resultado[$input] = "Saldo no valido.";
+                } else if ((float)$cadena < 0) {
+                    $resultado[$input] = "El saldo no puede ser negativo";
+                }
+                break;
         }
 
         return $resultado;
+    }
+
+
+
+    public function destroy($id)
+    {
+        echo "Borrar usuario";
     }
 }

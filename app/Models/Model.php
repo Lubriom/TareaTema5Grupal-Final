@@ -136,6 +136,11 @@ class Model
     public function clear()
     {
         $this->query = null;
+        $this->where = null;
+        $this->values = [];
+        $this->orderBy = null;
+        $this->join = null;
+    
         return $this;
     }
 

@@ -56,22 +56,22 @@ class LoginController extends Controller
 
             if ($busquedaUser->clear()->checkTableExists()) {
 
-                $contrasena = $busquedaUser->clear()->select('contraseña')->WHERE("usuario", $user)->get();
+                $datos = $busquedaUser->clear()->select('id', 'contraseña')->WHERE("usuario", $user)->get();
 
-                if (!empty($contrasena) ) {
-                    if (password_verify($password, $contrasena[0]["contraseña"])) {
-                        $_SESSION["nombre"]=$user;
+                if (!empty($datos)) {
+                    if (password_verify($password, $datos[0]["contraseña"])) {
+                        $_SESSION["nombre"] = $user;
+                        $_SESSION["id"] = $datos[0]["id"];
                         return $this->redirect('../home');
-
-                    }else{
+                    } else {
                         $errores["password"] = "Contraseña Incorrecta";
 
-                        return $this->view('login.index', $errores); 
+                        return $this->view('login.index', $errores);
                     }
-                }else{
+                } else {
                     $errores["user"] = "Usuario Incorrecto";
 
-                    return $this->view('login.index', $errores); 
+                    return $this->view('login.index', $errores);
                 }
             } else {
                 $errores["csrf"] = "No hay ningun usuario registrado";
@@ -103,7 +103,7 @@ class LoginController extends Controller
             case 'user':
                 if (empty($cadena)) {
                     $resultado[$input] = "Debe de rellenar el campo nombre.";
-                } 
+                }
                 break;
             case 'password':
                 if (empty($cadena)) {

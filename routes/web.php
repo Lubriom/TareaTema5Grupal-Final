@@ -10,19 +10,33 @@ use App\Controllers\RegisterController;
 // Tendremos rutas para get y pst, así como parámetros opcionales indicados con : que podrán
 // ser recuperados por un mismo controlador. Por ejemplo, /curso/:variable y /curso/ruta1 usan el mismo controlador
 // y :variable se trata como un parámetro ajeno a la ruta
+
+// Ruta Inicial
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/home', [HomeController::class, 'index']);
+
+// Crear Base de datos y registrar 100 usuarios
 Route::get('/crearBD', [UsuarioController::class, 'create']);
+
+//Login y cerrar sesion por método get
 Route::get('/login', [LoginController::class, 'index']);
 Route::get('/logout', [LoginController::class, 'logout']);
-Route::get('/usuario/nuevo', [UsuarioController::class, 'create']);
-Route::get('/usuario/pruebas', [UsuarioController::class, 'pruebasSQLQueryBuilder']);
 
-// Usuarios
-Route::get('/usuarios', [UsuarioController::class, 'show']);
+//Gestion de usuarios
+Route::get('/usuario/:id', [UsuarioController::class, 'show']);
+Route::get('/usuarios', [UsuarioController::class, 'listar']);
+Route::post('/usuario/panel/:id', [UsuarioController::class, 'update']);
+Route::post('/usuario/transaccion/:id', [UsuarioController::class, 'transaccion']);//Transaccion de Saldo
 
+//Comprobar usuarios datos método post
 Route::post('/login/check', [LoginController::class, 'check']);
-Route::post('/registro', [RegisterController::class, 'index']);
 
- 
+//Envio a la pagina registro por método post y validación y registro
+Route::post('/registro', [RegisterController::class, 'index']);
+Route::post('/register/check', [RegisterController::class, 'check']);
+
+//Redireccion a login por método post
+Route::post('/login', [LoginController::class, 'index']);
+
+
 Route::dispatch();

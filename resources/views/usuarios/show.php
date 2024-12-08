@@ -41,10 +41,10 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     </p>
                 <?php endif; ?>
                 <div class="paginacion">
-                    <?php if ($_GET['page'] >= 2) : ?>
-                        <a href="/usuarios?page=<?php echo $_GET['page'] - 1; ?>">Anterior</a>
-                        <?php endif; ?>
-                        <a href="/usuarios?page=<?php echo $_GET['page'] + 1; ?>">Siguiente</a>
+                    <?php if ($_GET['p'] >= 2) : ?>
+                        <a href="/usuarios?p=<?php echo $_GET['p'] - 1; ?>">Anterior</a>
+                    <?php endif; ?>
+                    <a href="/usuarios?p=<?php echo $_GET['p'] + 1; ?>">Siguiente</a>
                 </div>
             </div>
         </main>
