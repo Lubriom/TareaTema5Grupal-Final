@@ -98,7 +98,7 @@ body{
     row-gap: 20px;
 }
 /* Repetir home__login etc etc para el contenido de otras paginas */
-.home__productos{
+.home{
     background-color: slategray;
     display: flex;
     width: 100%;
@@ -435,4 +435,27 @@ label{
     display: flex;
     justify-content: center;
     align-self: center;
+}
+table{
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+}
+td{
+    border: 1px solid black;
+}
+.icons__action{
+    display: flex;
+    justify-content: space-around;
+    align-self: center;
+    gap: 10px;
+}
+.icons__action svg{
+    cursor: pointer;
+    fill: #d9534f;
+}
+.paginacion{
+    display: flex;
+    flex-direction: row;
 }

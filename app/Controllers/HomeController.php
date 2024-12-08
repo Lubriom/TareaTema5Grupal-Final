@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Controllers;
-use Exception;
-
-use App\Models\UsuarioModel;
 
 class HomeController extends Controller
 {

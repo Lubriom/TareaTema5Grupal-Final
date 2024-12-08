@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
-use DateTime;
-use Exception;
 
 // use App\Models\UsuarioModel;
 class RegisterController extends Controller
@@ -44,24 +42,30 @@ class RegisterController extends Controller
             $errores = array_merge($errores, $erroresCampo);
         }
 
+        // Recorremos el array de error en busca de errores
         foreach ($errores as $error) {
             if ($error != "") {
                 $bandera = true;
             }
         }
+
+        // Si hay errores se regresa a la vista con el array de errores
         if ($bandera) {
             return $this->view('register.index', $errores);
         } else {
             $busquedaUser = new UsuarioModel();
 
+            // Comprobamos si la table existe en cas contrario la creamos
             if (!$busquedaUser->clear()->checkTableExists()) {
                 $datos = ["nombre" => "VARCHAR(100)", "apellidos" => "VARCHAR(100)", "usuario" => "VARCHAR(100)", "correo" => "VARCHAR(100)", "fecha_Nac" => "DATETIME", "contraseña" => "VARCHAR(100)", "saldo" => "DECIMAL(20)"];
 
                 $busquedaUser->clear()->createTable($datos);
             }
 
+            // Buscamos si el nombre de usuario no existe en la base de datos
             $usuario = $busquedaUser->clear()->select('*')->WHERE("usuario", $user)->get();
 
+            // Una vez buscado preparamos los datos para insertarlo en la tabla
             if (empty($usuario)) {
 
                 $register["nombre"] = $nombre;

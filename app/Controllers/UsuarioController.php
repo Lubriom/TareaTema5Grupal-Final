@@ -53,13 +53,17 @@ class UsuarioController extends Controller
 
     public function show($id)
     {
-        if ($id != $_SESSION["id"]) {
-            return $this->view('panelControl.noAcceso');
-        } else {
-            $usuarioModel = new UsuarioModel();
+        if (isset($_SESSION['id'])) {
+            if ($id != $_SESSION["id"]) {
+                return $this->view('panelControl.noAcceso');
+            } else {
+                $usuarioModel = new UsuarioModel();
 
-            $usuario = $usuarioModel->clear()->select('*')->where("id", $id)->get();
-            return $this->view('panelControl.index', $usuario);
+                $usuario = $usuarioModel->clear()->select('*')->where("id", $id)->get();
+                return $this->view('panelControl.index', $usuario);
+            }
+        } else {
+            return $this->view('panelControl.noAcceso');
         }
     }
 
@@ -150,30 +154,122 @@ class UsuarioController extends Controller
 
     public function listar()
     {
-        $usuarioModel = new UsuarioModel();
-        $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
-        $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
-        $usuarios = [];
-        $cada = 5;
+        if (isset($_SESSION['id'])) {
+            $usuarioModel = new UsuarioModel();
+            $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
+            $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
+            $usuarios = [];
+            $cada = 5;
 
-        $paginacion = $this->filtrado($_GET['p']);
-        $paginacion = (is_numeric($paginacion)) ? $paginacion : 1;
+            $paginacion = $this->filtrado($_GET['p']);
+            $paginacion = (is_numeric($paginacion)) ? $paginacion : 1;
 
-        if ($paginacion <= 0 || ($paginacion * $cada) > $cantidadUsuarios) {
-            header("Location: /usuarios?p=1");
-        }
-        $desde = ($paginacion - 1) * $cada;
-        $usuarios = $usuarioModel->rows($cada, $desde);
+            if ($paginacion <= 0 || $paginacion > ceil($cantidadUsuarios / $cada)) {
+                header("Location: /usuarios?p=1");
+            }
+            $desde = ($paginacion - 1) * $cada;
+            $usuarios = $usuarioModel->rows($cada, $desde);
 
-        return $this->view('usuarios.show', $usuarios);
+            return $this->view('usuarios.show', $usuarios);
+        } else { return $this->view('home'); }
     }
 
     public function edit($id)
     {
-        echo "Editar usuario";
+        if (isset($_SESSION['id'])) {
+            $usuarioModel = new UsuarioModel();
+
+            $usuario = $usuarioModel->clear()->select('*')->where("id", $id)->get();
+            return $this->view('usuarios.edit', $usuario);
+        } else {
+            return $this->view('home');
+        }
     }
 
-    public function update($id)
+    public function updateOther($id)
+    {
+        $bandera = false;
+        $busquedaUser = new UsuarioModel();
+
+        $csrf_token = isset($_POST['csrf_token']) ? $this->filtrado($_POST['csrf_token']) : '';
+
+        // Validación del token CSRF
+        if ($csrf_token !== $_SESSION['csrf_token']) {
+            // die('Token CSRF inválido');
+            $errores['csrf'] = "Error: Token CSRF inválido.";
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('usuarios.edit', $datos);
+        }
+
+        $campos = ["nombre", "apellidos", "user", "correo", "fech_Nac", "password", "saldo"];
+        $errores = [];
+
+        // Recorremos cada campo esperado y aplicamos el filtrado y validación
+        foreach ($campos as $campo) {
+            // Si el campo está definido en $_POST, lo filtramos, si no, se le asigna una cadena vacía
+            $$campo = isset($_POST[$campo]) ? $this->filtrado($_POST[$campo]) : '';
+            // Validamos el campo y almacenamos el resultado en el array de errores
+            $erroresCampo = $this->validarCampos($campo, $$campo);
+            $errores = array_merge($errores, $erroresCampo);
+        }
+
+        foreach ($errores as $error) {
+            if ($error != "") {
+                $bandera = true;
+            }
+        }
+        if ($bandera) {
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+            $datos[] = $usuario[0];
+            $datos[] = $errores;
+            return $this->view('usuarios.edit', $datos);
+        } else {
+
+            $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+
+            if (!empty($usuario)) {
+
+                if (!empty($nombre)) {
+                    $update["nombre"] = $nombre;
+                }
+                if (!empty($apellidos)) {
+                    $update["apellidos"] = $apellidos;
+                }
+                if (!empty($user)) {
+                    $update["usuario"] = $user;
+                }
+                if (!empty($correo)) {
+                    $update["correo"] = $correo;
+                }
+                if (!empty($fech_Nac)) {
+                    $update["fecha_Nac"] = $fech_Nac;
+                }
+                if (!empty($saldo)) {
+                    $update["saldo"] = $saldo;
+                }
+                if (!empty($update)) {
+                    $busquedaUser->clear()->update($id, $update);
+
+                    $datos = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+
+                    $_SESSION["nombre"] = $datos[0]["usuario"];
+                }
+
+                return $this->view("usuarios.edit", $datos);
+            } else {
+                $errores["user"] = "Error al intentar actualizar los datos";
+                $usuario = $busquedaUser->clear()->select('*')->WHERE("id", $id)->get();
+                $datos[] = $usuario[0];
+                $datos[] = $errores;
+                return $this->view('usuarios.edit', $datos);
+            }
+        }
+    }
+    public function updateSelf($id)
     {
         $bandera = false;
         $busquedaUser = new UsuarioModel();
@@ -257,7 +353,7 @@ class UsuarioController extends Controller
         }
     }
 
-     private function filtrado($datos): string
+    private function filtrado($datos): string
     {
         $datos = trim($datos);
         $datos = stripslashes($datos);
@@ -341,10 +437,14 @@ class UsuarioController extends Controller
         return $resultado;
     }
 
-
-
-    public function destroy($id)
+    public function delete($id)
     {
-        echo "Borrar usuario";
+        if(isset($_SESSION['id'])){
+            $usuarioModel = new UsuarioModel();
+
+            $usuarioModel->delete($id);
+
+            return $this->view('usuarios.show');
+        } else {return $this->view('home'); }
     }
 }

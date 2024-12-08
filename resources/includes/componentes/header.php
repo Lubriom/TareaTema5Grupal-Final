@@ -11,13 +11,15 @@
                 <a class="nav__link" href="/crearBD">Crear Base de Datos</a>
             </li>
             <?php if (isset($_SESSION['nombre'])): ?>
-                <li class="navlistItem">
+                <li class="nav__listItem">
                     <a class="nav__link" href="/usuario/<?php echo $_SESSION['id'] ?>">Usuario</a>
                 </li>
             <?php endif; ?>
-            <li class="nav__listItem">
-                <a class="nav__link" href="/usuarios?p=1">Lista Usuarios</a>
-            </li>
+            <?php if (isset($_SESSION['nombre'])): ?>
+                <li class="nav__listItem">
+                    <a class="nav__link" href="/usuarios?p=1">Lista Usuarios</a>
+                </li>
+            <?php endif; ?>
             <?php if (!isset($_SESSION['nombre'])) : ?>
                 <li class="nav__listItem">
                     <a class="nav__link" href="/login">Iniciar Sesion</a>

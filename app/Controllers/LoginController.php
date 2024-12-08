@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
-use DateTime;
-use Exception;
 
 // use App\Models\UsuarioModel;
 class LoginController extends Controller
@@ -21,7 +19,6 @@ class LoginController extends Controller
     public function check()
     {
         $bandera = false;
-        $comprobador = false;
 
         $csrf_token = isset($_POST['csrf_token']) ? $this->filtrado($_POST['csrf_token']) : '';
 
@@ -44,16 +41,20 @@ class LoginController extends Controller
             $errores = array_merge($errores, $erroresCampo);
         }
 
+        // Recorremos el array de error en busca de errores
         foreach ($errores as $error) {
             if ($error != "") {
                 $bandera = true;
             }
         }
+ 
+        // Si hay errores se regresa a la vista con el array de errores en otro caso inicia sesion
         if ($bandera) {
             return $this->view('login.index', $errores);
         } else {
             $busquedaUser = new UsuarioModel();
 
+            // Comprobamos si la tabla existe antes de buscar el usuario
             if ($busquedaUser->clear()->checkTableExists()) {
 
                 $datos = $busquedaUser->clear()->select('id', 'contraseña')->WHERE("usuario", $user)->get();
@@ -86,7 +87,7 @@ class LoginController extends Controller
         return $this->view('login.register');
     }
 
-    function filtrado($datos): string
+    private function filtrado($datos): string
     {
         $datos = trim($datos);
         $datos = stripslashes($datos);
@@ -94,7 +95,7 @@ class LoginController extends Controller
         return $datos;
     }
 
-    function validarCampos(String $input, String $cadena): array
+    private function validarCampos(String $input, String $cadena): array
     {
         $resultado = [];
 
@@ -117,43 +118,9 @@ class LoginController extends Controller
         return $resultado;
     }
 
-    public function store()
-    {
-        // Volvemos a tener acceso al modelo
-        // $usuarioModel = new UsuarioModel();
-
-        // Se llama a la función correpondiente, pasando como parámetro
-        // $_POST
-        // var_dump($_POST);
-        // echo "Se ha enviado desde POST";
-
-        // Podríamos redirigir a donde se desee después de insertar
-        //return $this->redirect('/contacts');
-    }
-
     public function logout()
     {
         session_destroy();
         return $this->redirect("home");
-    }
-
-    public function show($id)
-    {
-        echo "Mostrar usuario con id: {$id}";
-    }
-
-    public function edit($id)
-    {
-        echo "Editar usuario";
-    }
-
-    public function update($id)
-    {
-        echo "Actualizar usuario";
-    }
-
-    public function destroy($id)
-    {
-        echo "Borrar usuario";
     }
 }
