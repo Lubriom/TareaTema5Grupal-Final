@@ -1,25 +1,31 @@
 <header class="header">
-    <div class="header__title">
+    <div class="headertitle">
         <p>Tarea Tema 5 DAW | Roy, Hector, Mariano</p>
     </div>
-    <nav class="header__nav">
-        <ul class="nav__list">
-            <li class="nav__listItem">
-                <a class="nav__link" href="/">Inicio</a>
+    <nav class="headernav">
+        <ul class="navlist">
+            <li class="navlistItem">
+                <a class="navlink" href="/">Inicio</a>
             </li>
-            <li class="nav__listItem">
-                <a class="nav__link" href="/crearBD">Crear Base de Datos</a>
+            <li class="navlistItem">
+                <a class="navlink" href="/crearBD">Crear Base de Datos</a>
             </li>
-            <li class="nav__listItem">
-                <a class="nav__link" href="/usuarios">Usuarios</a>
+            <?php if (isset($_SESSION['nombre'])): ?>
+                <li class="navlistItem">
+                    <a class="navlink" href="/usuario/<?php echo $_SESSION['id'] ?>">Usuario</a>
+
+                </li>
+            <?php endif; ?>
+            <li class="navlistItem">
+                <a class="navlink" href="/usuarios?page=0">Lista Usuarios</a>
             </li>
             <?php if (!isset($_SESSION['nombre'])) : ?>
-                <li class="nav__listItem">
-                    <a class="nav__link" href="/login">Iniciar Sesion</a>
+                <li class="navlistItem">
+                    <a class="navlink" href="/login">Iniciar Sesion</a>
                 </li>
             <?php endif; ?>
             <?php if (isset($_SESSION['nombre'])): ?>
-                <li class="nav__listItem">
+                <li class="navlistItem">
                     <a class="nav__link" href="/logout">Logout</a>
                 </li>
             <?php endif; ?>

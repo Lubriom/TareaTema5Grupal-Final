@@ -17,8 +17,10 @@ Route::get('/login', [LoginController::class, 'index']);
 Route::get('/logout', [LoginController::class, 'logout']);
 Route::get('/usuario/nuevo', [UsuarioController::class, 'create']);
 Route::get('/usuario/pruebas', [UsuarioController::class, 'pruebasSQLQueryBuilder']);
-Route::get('/usuario/:id', [UsuarioController::class, 'show']);
-Route::post('/usuario', [UsuarioController::class, 'store']);
+
+// Usuarios
+Route::get('/usuarios', [UsuarioController::class, 'show']);
+
 Route::post('/login/check', [LoginController::class, 'check']);
 Route::post('/registro', [RegisterController::class, 'index']);
 

@@ -38,7 +38,7 @@ class UsuarioController extends Controller
             $datos = [];
             $datos["nombre"] = $nombre[array_rand($nombre)];
             $datos["apellidos"] = $apellido[array_rand($apellido)];
-            $datos["usuario"] = $usuario[array_rand($usuario)].$i;
+            $datos["usuario"] = $usuario[array_rand($usuario)] . $i;
             $datos["correo"] = $correo[array_rand($correo)];
             $fecha = new DateTime($fecha_Nac[array_rand($fecha_Nac)]);
             $datos["fecha_Nac"] = $fecha->format('Y-m-d');;
@@ -50,23 +50,24 @@ class UsuarioController extends Controller
         return $this->redirect('home');
     }
 
-    public function store()
+    public function show()
     {
-        // Volvemos a tener acceso al modelo
         $usuarioModel = new UsuarioModel();
+        $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
+        $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
+        $usuarios = [];
+        $cada = 5;
 
-        // Se llama a la función correpondiente, pasando como parámetro
-        // $_POST
-        var_dump($_POST);
-        echo "Se ha enviado desde POST";
+        $paginacion = $this->filtrado($_GET['page']);
+        $paginacion = (is_numeric($paginacion)) ? $paginacion : 1;
 
-        // Podríamos redirigir a donde se desee después de insertar
-        //return $this->redirect('/contacts');
-    }
+        if ($paginacion <= 0 || ($paginacion * $cada) > $cantidadUsuarios) {
+            header("Location: /usuarios?page=1");
+        }
+        $desde = ($paginacion - 1) * $cada;
+        $usuarios = $usuarioModel->rows($cada, $desde);
 
-    public function show($id)
-    {
-        echo "Mostrar usuario con id: {$id}";
+        return $this->view('usuarios.show', $usuarios);
     }
 
     public function edit($id)
@@ -85,28 +86,22 @@ class UsuarioController extends Controller
     }
 
     // Función para mostrar como fuciona con ejemplos
-    public function pruebasSQLQueryBuilder()
+    private function filtrado($datos): string
     {
-        // Se instancia el modelo
-        $usuarioModel = new UsuarioModel();
-        // Descomentar consultas para ver la creación
-        //$usuarioModel->all();
-        //$usuarioModel->select('columna1', 'columna2')->get();
-        // $usuarioModel->select('columna1', 'columna2')
-        //             ->where('columna1', '>', '3')
-        //             ->orderBy('columna1', 'DESC')
-        //             ->get();
-        // $usuarioModel->select('columna1', 'columna2')
-        //             ->where('columna1', '>', '3')
-        //             ->where('columna2', 'columna3')
-        //             ->where('columna2', 'columna3')
-        //             ->where('columna3', '!=', 'columna4', 'OR')
-        //             ->orderBy('columna1', 'DESC')
-        //             ->get();
-        //$usuarioModel->create(['id' => 1, 'nombre' => 'nombre1']);
-        //$usuarioModel->delete(['id' => 1]);
-        //$usuarioModel->update(['id' => 1], ['nombre' => 'NombreCambiado']);
+        $datos = trim($datos);
+        $datos = stripslashes($datos);
+        $datos = htmlspecialchars($datos);
+        return $datos;
+    }
 
-        echo "Pruebas SQL Query Builder";
+    private function validarCampos(String $campo): string
+    {
+        $resultado = "";
+
+        if (is_nan($campo)) {
+            $resultado = "Error: No se ha recibido un numero";
+        }
+
+        return $resultado;
     }
 }

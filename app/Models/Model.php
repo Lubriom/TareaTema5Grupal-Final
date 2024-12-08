@@ -306,4 +306,28 @@ class Model
     {
         return $this->conex;
     }
+
+    // Consulta a la base de datos de forma limitada
+    public function rows(int $limit, int $offset) : array {
+        try {
+            $sql = "SELECT * FROM " . $this->table . ' LIMIT ' . $limit . ' OFFSET ' . $offset .';';
+            $this->query($sql);
+            return $this->query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error al obtener los registros: ' . $e->getMessage());
+        }
+    }
+
+    // COnsulta que permite contar la cantidad de registros en una tabla
+    public function contarRegistros()
+    {
+        try {
+            $sql = "SELECT COUNT(*) AS TOTAL FROM " . $this->table . ";";
+            $this->query($sql);
+            return $this->query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error al obtener los registros: ' . $e->getMessage());
+
+        }
+    }
 }
