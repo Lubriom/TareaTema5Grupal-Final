@@ -7,7 +7,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 <head>
     <?php require "." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "includes" . DIRECTORY_SEPARATOR . "componentes" . DIRECTORY_SEPARATOR . 'head.php'; ?>
-    <title>Inicio | Tarea_Tema5-Final</title>
+    <title>Login | Tarea_Tema5-Final</title>
 </head>
 
 <body>

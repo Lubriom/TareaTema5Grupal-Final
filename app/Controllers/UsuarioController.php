@@ -154,24 +154,39 @@ class UsuarioController extends Controller
 
     public function listar()
     {
+        $usuarioModel = new UsuarioModel();
+
+        if (!$usuarioModel->clear()->checkTableExists()) {
+            $datos = ["nombre" => "VARCHAR(100)", "apellidos" => "VARCHAR(100)", "usuario" => "VARCHAR(100)", "correo" => "VARCHAR(100)", "fecha_Nac" => "DATETIME", "contraseña" => "VARCHAR(100)", "saldo" => "DECIMAL(20)"];
+
+            $usuarioModel->clear()->createTable($datos);
+        }
+
         if (isset($_SESSION['id'])) {
-            $usuarioModel = new UsuarioModel();
+            
             $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
             $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
             $usuarios = [];
             $cada = 5;
+
+            if($cantidadUsuarios == 0){
+                return $this->view('usuarios.vacio');
+            }
 
             $paginacion = $this->filtrado($_GET['p']);
             $paginacion = (is_numeric($paginacion)) ? $paginacion : 1;
 
             if ($paginacion <= 0 || $paginacion > ceil($cantidadUsuarios / $cada)) {
                 header("Location: /usuarios?p=1");
+                exit;
             }
             $desde = ($paginacion - 1) * $cada;
             $usuarios = $usuarioModel->rows($cada, $desde);
 
             return $this->view('usuarios.show', $usuarios);
-        } else { return $this->view('home'); }
+        } else {
+            return $this->view('home');
+        }
     }
 
     public function edit($id)
@@ -439,12 +454,14 @@ class UsuarioController extends Controller
 
     public function delete($id)
     {
-        if(isset($_SESSION['id'])){
+        if (isset($_SESSION['id'])) {
             $usuarioModel = new UsuarioModel();
 
             $usuarioModel->delete($id);
 
             return $this->view('usuarios.show');
-        } else {return $this->view('home'); }
+        } else {
+            return $this->view('home');
+        }
     }
 }

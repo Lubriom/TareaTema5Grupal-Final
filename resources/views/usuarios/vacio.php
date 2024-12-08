@@ -7,14 +7,18 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 <head>
     <?php require "." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "includes" . DIRECTORY_SEPARATOR . "componentes" . DIRECTORY_SEPARATOR . 'head.php'; ?>
-    <title>Sin acceso | Tarea_Tema5-Final</title>
+    <title>Tabla vacia | Tarea_Tema5-Final</title>
 </head>
 
 <body>
     <?php require "." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "includes" . DIRECTORY_SEPARATOR . "componentes" . DIRECTORY_SEPARATOR . 'header.php'; ?>
     <div class="content">
         <main class="main">
-            <h2>No tienes acceso para ver a este usuario</h2>
+            <div class="table__usuarios">
+                <p>
+                    <bold>La tabla se encuentra vacia</bold>
+                </p>
+            </div>
         </main>
     </div>
     <?php require "." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "includes" . DIRECTORY_SEPARATOR . "componentes" . DIRECTORY_SEPARATOR . 'footer.php'; ?>
