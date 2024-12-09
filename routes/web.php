@@ -30,6 +30,8 @@ Route::post('/usuarios/update/:id', [UsuarioController::class, 'updateOther']);
 Route::get('/usuarios/delete/:id', [UsuarioController::class, 'delete']);
 Route::post('/usuario/panel/:id', [UsuarioController::class, 'updateSelf']);
 Route::post('/usuario/transaccion/:id', [UsuarioController::class, 'transaccion']);//Transaccion de Saldo
+Route::post('/usuarios/buscarUsuarios', [UsuarioController::class, 'buscarUsuarios']);
+
 
 //Comprobar usuarios datos método post
 Route::post('/login/check', [LoginController::class, 'check']);

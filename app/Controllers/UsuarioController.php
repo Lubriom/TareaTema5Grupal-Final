@@ -163,13 +163,13 @@ class UsuarioController extends Controller
         }
 
         if (isset($_SESSION['id'])) {
-            
+
             $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
             $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
             $usuarios = [];
             $cada = 5;
 
-            if($cantidadUsuarios == 0){
+            if ($cantidadUsuarios == 0) {
                 return $this->view('usuarios.vacio');
             }
 
@@ -464,4 +464,73 @@ class UsuarioController extends Controller
             return $this->view('home');
         }
     }
+    public function buscarUsuarios()
+    {
+        // Recoger los datos del formulario
+        $nombre = $_POST['nombre'] ?? '';
+        $apellidos = $_POST['apellidos'] ?? '';
+        $usuario = $_POST['usuario'] ?? '';
+        $correo = $_POST['correo'] ?? '';
+        $saldoMin = $_POST['saldoMin'] ?? 0;
+        $saldoMax = $_POST['saldoMax'] ?? 999999;
+    
+        // Crear la consulta para los usuarios
+        $usuarioModel = new UsuarioModel();
+        $query = $usuarioModel->clear(); // Limpiar la consulta anterior si la hay
+    
+        // Construir las condiciones de filtrado
+        $conditions = [];
+    
+        // Filtrar por nombre si está presente
+        if (!empty($nombre)) {
+            $conditions[] = ['nombre', 'LIKE', "%{$nombre}%"];
+        }
+    
+        // Filtrar por apellidos si está presente
+        if (!empty($apellidos)) {
+            $conditions[] = ['apellidos', 'LIKE', "%{$apellidos}%"];
+        }
+    
+        // Filtrar por usuario si está presente
+        if (!empty($usuario)) {
+            $conditions[] = ['usuario', 'LIKE', "%{$usuario}%"];
+        }
+    
+        // Filtrar por correo si está presente
+        if (!empty($correo)) {
+            $conditions[] = ['correo', 'LIKE', "%{$correo}%"];
+        }
+    
+        // Filtrar por saldo si el rango es especificado
+        if ((!empty($saldoMin) && $saldoMin > 0) || (!empty($saldoMax) && $saldoMax < 999999)) {
+            if (!empty($saldoMin) && !empty($saldoMax)) {
+                // Usamos BETWEEN para un rango de saldo
+                $conditions[] = ['saldo', 'BETWEEN', [$saldoMin, $saldoMax]];
+            } elseif (!empty($saldoMin)) {
+                // Filtrar por saldo mínimo
+                $conditions[] = ['saldo', '>=', $saldoMin];
+            } elseif (!empty($saldoMax)) {
+                // Filtrar por saldo máximo
+                $conditions[] = ['saldo', '<=', $saldoMax];
+            }
+        }
+    
+        // Aplicar las condiciones a la consulta
+        foreach ($conditions as $condition) {
+            $query->where($condition[0], $condition[1], $condition[2]);
+        }
+    
+        // Ejecutar la consulta para obtener los usuarios
+        $usuarios = $query->get();
+    
+        // Verificar si la consulta devuelve resultados
+        if (empty($usuarios)) {
+            return $this->view('usuarios.noResultados'); // Vista para cuando no se encuentren resultados
+        }
+    
+        // Pasar los datos a la vista
+        return $this->view('usuarios.show', ['data' => $usuarios]);
+    }
+    
+
 }
