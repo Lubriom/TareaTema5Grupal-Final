@@ -24,6 +24,7 @@ Route::get('/logout', [LoginController::class, 'logout']);
 
 //Gestion de usuarios
 Route::get('/usuario/:id', [UsuarioController::class, 'show']);
+Route::get('/usuario/:id', [UsuarioController::class, 'show']);
 Route::get('/usuarios', [UsuarioController::class, 'listar']);
 Route::get('/usuarios/editar/:id', [UsuarioController::class, 'edit']);
 Route::post('/usuarios/update/:id', [UsuarioController::class, 'updateOther']);

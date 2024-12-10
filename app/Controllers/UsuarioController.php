@@ -517,11 +517,8 @@ class UsuarioController extends Controller
     
         // Aplicar las condiciones a la consulta
         foreach ($conditions as $condition) {
-            $query->where($condition[0], $condition[1], $condition[2]);
+            $usuarios = $usuarioModel->where($condition[0], $condition[1], $condition[2])->get();
         }
-    
-        // Ejecutar la consulta para obtener los usuarios
-        $usuarios = $query->get();
     
         // Verificar si la consulta devuelve resultados
         if (empty($usuarios)) {
@@ -529,7 +526,7 @@ class UsuarioController extends Controller
         }
     
         // Pasar los datos a la vista
-        return $this->view('usuarios.show', ['data' => $usuarios]);
+        return $this->view('usuarios.show', $usuarios);
     }
     
 

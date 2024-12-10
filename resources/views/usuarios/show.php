@@ -15,7 +15,8 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     <div class="content">
         <main class="main">
             <div class="table__usuarios">
-                <?php if (isset($_GET['p'])) : ?>
+                <?php print_r($data); ?>
+                <!-- <?php if (isset($_GET['p'])) : ?>
                     <?php if (!empty($data)) : ?>
                         <table>
                             <thead>
@@ -59,35 +60,35 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     </div>
                 <?php else : ?>
                     <?php header('Location: /usuarios?p=1'); ?>
-                <?php endif; ?>
+                <?php endif; ?> -->
             </div>
             <form method="POST" action="/usuarios/buscarUsuarios">
-    <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" id="nombre">
-    </div>
-    <div>
-        <label for="apellidos">Apellidos:</label>
-        <input type="text" name="apellidos" id="apellidos">
-    </div>
-    <div>
-        <label for="usuario">Usuario:</label>
-        <input type="text" name="usuario" id="usuario">
-    </div>
-    <div>
-        <label for="correo">Correo:</label>
-        <input type="text" name="correo" id="correo">
-    </div>
-    <div>
-        <label for="saldoMin">Saldo Mínimo:</label>
-        <input type="number" name="saldoMin" id="saldoMin" step="0.01">
-    </div>
-    <div>
-        <label for="saldoMax">Saldo Máximo:</label>
-        <input type="number" name="saldoMax" id="saldoMax" step="0.01">
-    </div>
-    <button type="submit">Buscar</button>
-</form>
+                <div>
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre">
+                </div>
+                <div>
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" name="apellidos" id="apellidos">
+                </div>
+                <div>
+                    <label for="usuario">Usuario:</label>
+                    <input type="text" name="usuario" id="usuario">
+                </div>
+                <div>
+                    <label for="correo">Correo:</label>
+                    <input type="text" name="correo" id="correo">
+                </div>
+                <div>
+                    <label for="saldoMin">Saldo Mínimo:</label>
+                    <input type="number" name="saldoMin" id="saldoMin" step="0.01">
+                </div>
+                <div>
+                    <label for="saldoMax">Saldo Máximo:</label>
+                    <input type="number" name="saldoMax" id="saldoMax" step="0.01">
+                </div>
+                <button type="submit">Buscar</button>
+            </form>
 
             <?php if (!empty($mensaje)): ?>
                 <p><?= htmlspecialchars($mensaje) ?></p>
