@@ -163,7 +163,6 @@ class UsuarioController extends Controller
         }
 
         if (isset($_SESSION['id'])) {
-
             $cantidadUsuarios = $usuarioModel->contarRegistros()[0];
             $cantidadUsuarios = $cantidadUsuarios['TOTAL'];
             $usuarios = [];
@@ -191,13 +190,13 @@ class UsuarioController extends Controller
 
     public function edit($id)
     {
-        if (isset($_SESSION['id'])) {
-            $usuarioModel = new UsuarioModel();
+        $busquedaUser = new UsuarioModel();
 
-            $usuario = $usuarioModel->clear()->select('*')->where("id", $id)->get();
+        $usuario = $busquedaUser->clear()->select('*')->where("id", $id)->get();
+        if (!empty($usuario)) {
             return $this->view('usuarios.edit', $usuario);
         } else {
-            return $this->view('home');
+            return $this->view('usuarios.usuarioInexistente');
         }
     }
 
@@ -473,34 +472,33 @@ class UsuarioController extends Controller
         $correo = $_POST['correo'] ?? '';
         $saldoMin = $_POST['saldoMin'] ?? 0;
         $saldoMax = $_POST['saldoMax'] ?? 999999;
-    
+
         // Crear la consulta para los usuarios
         $usuarioModel = new UsuarioModel();
-        $query = $usuarioModel->clear(); // Limpiar la consulta anterior si la hay
-    
+
         // Construir las condiciones de filtrado
         $conditions = [];
-    
+
         // Filtrar por nombre si está presente
         if (!empty($nombre)) {
             $conditions[] = ['nombre', 'LIKE', "%{$nombre}%"];
         }
-    
+
         // Filtrar por apellidos si está presente
         if (!empty($apellidos)) {
             $conditions[] = ['apellidos', 'LIKE', "%{$apellidos}%"];
         }
-    
+
         // Filtrar por usuario si está presente
         if (!empty($usuario)) {
             $conditions[] = ['usuario', 'LIKE', "%{$usuario}%"];
         }
-    
+
         // Filtrar por correo si está presente
         if (!empty($correo)) {
             $conditions[] = ['correo', 'LIKE', "%{$correo}%"];
         }
-    
+
         // Filtrar por saldo si el rango es especificado
         if ((!empty($saldoMin) && $saldoMin > 0) || (!empty($saldoMax) && $saldoMax < 999999)) {
             if (!empty($saldoMin) && !empty($saldoMax)) {
@@ -514,20 +512,19 @@ class UsuarioController extends Controller
                 $conditions[] = ['saldo', '<=', $saldoMax];
             }
         }
-    
+
         // Aplicar las condiciones a la consulta
         foreach ($conditions as $condition) {
             $usuarios = $usuarioModel->where($condition[0], $condition[1], $condition[2])->get();
         }
-    
+
         // Verificar si la consulta devuelve resultados
         if (empty($usuarios)) {
             return $this->view('usuarios.noResultados'); // Vista para cuando no se encuentren resultados
         }
-    
-        // Pasar los datos a la vista
-        return $this->view('usuarios.show', $usuarios);
-    }
-    
 
+        // print_r(['usuariosFiltrados' => $usuarios]);
+        // Pasar los datos a la vista
+        return $this->view('usuarios.show', ['usuariosFiltrados' => $usuarios]);
+    }
 }
