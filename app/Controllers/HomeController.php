@@ -9,6 +9,12 @@ class HomeController extends Controller
     {
         return $this->view('home'); // Seleccionamos una vista (método padre)
     }
-
-    
+ 
+    /**
+     * Método que devuelve la vista al 404 si la pagina no existe
+     */
+    public function notFound()
+    {
+        return $this->view('404');
+    }
 }

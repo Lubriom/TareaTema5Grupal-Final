@@ -18,7 +18,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <!-- Campo oculto que envia junto con el formulario el token CSRF. -->
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
-                <div class="register__datos">
+                <div class="login__datos">
                     <div class="palabra">
                         <label for="nombre" class="title title--left">Nombre: <?php echo $data[0]["nombre"] ?></label>
                         <input type="text" class="palabra__input" name="nombre" />
@@ -71,38 +71,33 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         <p class="title title--left title--error"><?php echo $data[1]['csrf']; ?></p>
                     <?php endif; ?>
                     </p>
-                    <div class="boton"> <input class="boton__enviar" type="submit" name="enviar" value="Actualizar"></div>
+                    <input class="button__alt" type="submit" name="enviar" value="Actualizar">
                 </div>
             </form>
-            <hr class="separador separador-login" />
-            <div class="container-down">
-                <form class="formulario" action="/usuario/transaccion/<?php echo $_SESSION['id']; ?>" method="post" enctype="multipart/form-data">
-                    <div class="register__datos">
-                        <!-- Campo oculto que envia junto con el formulario el token CSRF. -->
-                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            <form class="formulario" action="/usuario/transaccion/<?php echo $_SESSION['id']; ?>" method="post" enctype="multipart/form-data">
+                <div class="login__datos">
+                    <!-- Campo oculto que envia junto con el formulario el token CSRF. -->
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
-                        <div class="palabra">
-                            <label for="idDestino" class="title title--left">Id del destinatario:</label>
-                            <input type="text" class="palabra__input" name="idDestino" />
-                            <?php if (isset($data[1]['idDestino'])): ?>
-                                <p class="title title--left title--error"><?php echo $data[1]['idDestino']; ?></p>
-                            <?php endif; ?>
-                            </p>
-                        </div>
-                        <div class="palabra">
-                            <label for="saldoEnvio" class="title title--left">Saldo a enviar:</label>
-                            <input type="text" class="palabra__input" name="saldoEnvio" />
-                            <?php if (isset($data[1]['saldoEnvio'])): ?>
-                                <p class="title title--left title--error"><?php echo $data[1]['saldoEnvio']; ?></p>
-                            <?php endif; ?>
-                            </p>
-                        </div>
-                        <div class="boton">
-                            <input class="boton__enviar boton__registro" type="submit" name="registro" value="Enviar saldo">
-                        </div>
+                    <div class="palabra">
+                        <label for="usuarioDestino" class="title title--left">Usuario destinatario:</label>
+                        <input type="text" class="palabra__input" name="usuarioDestino" />
+                        <?php if (isset($data[1]['usuarioDestino'])): ?>
+                            <p class="title title--left title--error"><?php echo $data[1]['usuarioDestino']; ?></p>
+                        <?php endif; ?>
+                        </p>
                     </div>
-                </form>
-            </div>
+                    <div class="palabra">
+                        <label for="saldoEnvio" class="title title--left">Saldo a enviar:</label>
+                        <input type="text" class="palabra__input" name="saldoEnvio" />
+                        <?php if (isset($data[1]['saldoEnvio'])): ?>
+                            <p class="title title--left title--error"><?php echo $data[1]['saldoEnvio']; ?></p>
+                        <?php endif; ?>
+                        </p>
+                    </div>
+                    <input class="button__alt" type="submit" name="registro" value="Enviar saldo">
+                </div>
+            </form>
         </main>
     </div>
     <?php require "." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "includes" . DIRECTORY_SEPARATOR . "componentes" . DIRECTORY_SEPARATOR . 'footer.php'; ?>

@@ -323,7 +323,7 @@ label{
 
 /* Formulario */
 .formulario {
-    background: #ffffff;
+    background: slategray;
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -336,9 +336,15 @@ label{
     box-sizing: border-box;
 }
 
-.register__datos {
+.login__datos {
     display: flex;
     flex-direction: column;
+}
+
+.register__datos {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -370,6 +376,20 @@ label{
     align-items: center;
     justify-content: center;
 }
+
+.boton__registro {
+    color: slategray;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-self: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
 .boton__enviar {
     background: rgb(96, 96, 96);
     color: white;
@@ -398,7 +418,7 @@ label{
 /* Títulos */
 .title {
     font-size: 1rem;
-    color: #333;
+    color: white;
 }
 
 .title--left {
@@ -425,10 +445,23 @@ label{
 }
 
 .container-down{
+    background-color: whitesmoke;
+    padding: 10px 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    gap: 1.5rem;
+    border-radius: 10px;
+    flex-direction: row;
+    box-sizing: border-box;
 }
+
 
 .separador{
     width: 50%;

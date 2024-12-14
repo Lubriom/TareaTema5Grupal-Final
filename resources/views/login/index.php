@@ -18,7 +18,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <!-- Campo oculto que envia junto con el formulario el token CSRF. -->
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
-                <div class="register__datos">
+                <div class="login__datos">
                     <div class="palabra">
                         <label for="user" class="title title--left">Usuario:</label>
                         <input type="text" class="palabra__input" name="user" />
@@ -39,18 +39,12 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         <p class="title title--left title--error"><?php echo $data['csrf']; ?></p>
                     <?php endif; ?>
                     </p>
-                    <div class="boton"> <input class="boton__enviar" type="submit" name="enviar" value="Iniciar sesión"></div>
+                    <input class="button__alt" type="submit" name="enviar" value="Iniciar sesión">
                 </div>
             </form>
-            <hr class="separador separador-login" />
             <div class="container-down">
-                <form class="formulario" action="/registro" method="post" enctype="multipart/form-data">
-                    <div class="register__datos">
-                        <div class="boton"> 
-                            <input class="boton__enviar boton__registro" type="submit" name="registro" value="Registrate">
-                        </div>
-                    </div>
-                </form>
+                <p>¿No tienes una cuenta?</p>
+                <a class="boton__registro" href="/registro">Registrate</a>
             </div>
         </main>
     </div>

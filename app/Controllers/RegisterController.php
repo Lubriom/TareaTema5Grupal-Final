@@ -9,17 +9,14 @@ class RegisterController extends Controller
 {
     public function index()
     {
-        // Creamos la conexión y tenemos acceso a todas las consultas sql del modelo
-        // $usuarioModel = new UsuarioModel();
-
-        // // Se recogen los valores del modelo, ya se pueden usar en la vista
-        // $usuarios = $usuarioModel->all();
-        return $this->view('register.index'); // compact crea un array de índice usuarios
+        if (!isset($_SESSION['nombre'])) {
+            return $this->view('register.index');
+        } else 
+        return $this->redirect('/login');
     }
     public function check()
     {
         $bandera = false;
-        $comprobador = false;
 
         $csrf_token = isset($_POST['csrf_token']) ? $this->filtrado($_POST['csrf_token']) : '';
 
@@ -73,7 +70,7 @@ class RegisterController extends Controller
                 $register["usuario"] = $user;
                 $register["correo"] = $correo;
                 $register["fecha_Nac"] = $fech_Nac;
-                $register["contraseña"] = password_hash($password,PASSWORD_DEFAULT);
+                $register["contraseña"] = password_hash($password, PASSWORD_DEFAULT);
                 $register["saldo"] = $saldo;
 
                 $busquedaUser->clear()->insertar($register);
@@ -159,7 +156,7 @@ class RegisterController extends Controller
                     $resultado[$input] = "Debe de rellenar el campo saldo";
                 } else if (!preg_match('/^\d+(\.\d+)?$/', $cadena)) {
                     $resultado[$input] = "Saldo no valido.";
-                }else if((float)$cadena<0){
+                } else if ((float)$cadena < 0) {
                     $resultado[$input] = "El saldo no puede ser negativo";
                 }
                 break;

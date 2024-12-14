@@ -73,6 +73,6 @@ class Route
             }
         }
 
-        echo 'Error 404 not found';
+        header('Location: /404');
     }
 }

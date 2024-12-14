@@ -20,32 +20,29 @@ Route::get('/crearBD', [UsuarioController::class, 'create']);
 
 //Login y cerrar sesion por método get
 Route::get('/login', [LoginController::class, 'index']);
+Route::post('/login/check', [LoginController::class, 'check']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
-//Gestion de usuarios
-Route::get('/usuario/:id', [UsuarioController::class, 'show']);
-Route::get('/usuarios', [UsuarioController::class, 'listar']);
-Route::get('/usuarios/editar/:id', [UsuarioController::class, 'edit']);
-Route::post('/usuarios/update/:id', [UsuarioController::class, 'updateOther']);
-Route::get('/usuarios/delete/:id', [UsuarioController::class, 'delete']);
+//Envio a la pagina registro por método post y validación y registro
+Route::get('/registro', [RegisterController::class, 'index']);
+Route::post('/register/check', [RegisterController::class, 'check']);
+
+//Gestion de usuario propio
+Route::get('/usuario/:id', [UsuarioController::class, 'show']); //abrimos el panel de usuario
 Route::post('/usuario/panel/:id', [UsuarioController::class, 'updateSelf']);
 Route::post('/usuario/transaccion/:id', [UsuarioController::class, 'transaccion']);//Transaccion de Saldo
-Route::post('/usuarios/buscarUsuarios', [UsuarioController::class, 'buscarUsuarios']);
+
+//Gestion de usuarios
+Route::get('/usuarios', [UsuarioController::class, 'listar']); //listamos usuarios
+Route::get('/usuarios/editar/:id', [UsuarioController::class, 'edit']); //abrimos el panel de usuario para multiples usuarios
+Route::post('/usuarios/update/:id', [UsuarioController::class, 'updateOther']);
+Route::get('/usuarios/delete/:id', [UsuarioController::class, 'delete']);
+
 Route::get('/usuariosFiltrados', [UsuarioController::class, 'buscarUsuarios']);
 Route::post('/usuariosFiltrados', [UsuarioController::class, 'buscarUsuarios']);
 
 
-
-//Comprobar usuarios datos método post
-Route::post('/login/check', [LoginController::class, 'check']);
-
-
-//Envio a la pagina registro por método post y validación y registro
-Route::post('/registro', [RegisterController::class, 'index']);
-Route::post('/register/check', [RegisterController::class, 'check']);
-
-//Redireccion a login por método post
-Route::post('/login', [LoginController::class, 'index']);
+Route::get('/404', [HomeController::class, 'notFound']);
 
 
 Route::dispatch();

@@ -9,12 +9,10 @@ class LoginController extends Controller
 {
     public function index()
     {
-        // Creamos la conexión y tenemos acceso a todas las consultas sql del modelo
-        // $usuarioModel = new UsuarioModel();
-
-        // // Se recogen los valores del modelo, ya se pueden usar en la vista
-        // $usuarios = $usuarioModel->all();
-        return $this->view('login.index'); // compact crea un array de índice usuarios
+        if(!isset($_SESSION['nombre'])){
+            return $this->view('login.index'); 
+        } else 
+        return $this->redirect('/');
     }
     public function check()
     {
@@ -82,11 +80,6 @@ class LoginController extends Controller
         }
     }
 
-    public function register()
-    {
-        return $this->view('login.register');
-    }
-
     private function filtrado($datos): string
     {
         $datos = trim($datos);
@@ -120,7 +113,10 @@ class LoginController extends Controller
 
     public function logout()
     {
-        session_destroy();
+        if(isset($_SESSION['nombre'])){
+            session_destroy();
         return $this->redirect("home");
+        }else 
+        return $this->redirect('/home');
     }
 }
