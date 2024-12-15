@@ -18,7 +18,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <!-- Campo oculto que envia junto con el formulario el token CSRF. -->
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
-                <div class="register__datos">
+                <div class="login__datos">
                     <div class="palabra">
                         <label for="nombre" class="title title--left">Nombre: <?php echo $data[0]["nombre"] ?></label>
                         <input type="text" class="palabra__input" name="nombre" />
@@ -71,7 +71,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         <p class="title title--left title--error"><?php echo $data[1]['csrf']; ?></p>
                     <?php endif; ?>
                     </p>
-                    <div class="boton"> <input class="boton__enviar" type="submit" name="enviar" value="Actualizar"></div>
+                   <input class="button__alt" type="submit" name="enviar" value="Actualizar">
                 </div>
             </form>
         </main>
